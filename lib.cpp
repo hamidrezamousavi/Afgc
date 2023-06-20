@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <math.h>
+
 #include "lib.h"
 /*
 pair<bool,string> Channle::get_next(){
@@ -141,24 +142,32 @@ void ExampleWorker::do_work(MainWindow* caller)
   {
     std::lock_guard<std::mutex> lock(m_Mutex);
     m_has_stopped = false;
+    
    // m_fraction_done = 0.0;
   //  m_message = "";
   } // The mutex is unlocked here by lock's destructor.
 
   // Simulate a long calculation.
+  double max = -1000000.0;
+  double min = 10000000.0;
+  double x = 1;
   for (int i = 0; ; ++i) // do until break
   {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    {
+    { 
       std::lock_guard<std::mutex> lock(m_Mutex);
-      force_data.force = std:: sin(i * 0.01);
+      
+      double data = sin(i * 0.10) * x;
+      force_data.force = data;
       force_data.sample_number = i;
-      force_data.max_force = (force_data.max_force < sin(i * 0.01))?
-                              sin(i * 0.01) :force_data.max_force;
+      max = (max > data)?max:data;
+      min = (min < data)?min:data;
+      
+      force_data.max_force = max;
   
-      force_data.min_force = (force_data.min_force > sin(i * 0.01))?
-      sin(i * 0.01) :force_data.min_force;
+      force_data.min_force = min;
+      x = x + 0.1;
       
       //m_fraction_done =std::sin(i * 0.01);
 
@@ -188,4 +197,48 @@ void ExampleWorker::do_work(MainWindow* caller)
 
   caller->notify();
 } 
+Axes::Axes(){}
+void Axes::update(int area_width, int area_height, 
+           int sample_number, double data_max, 
+           double data_min){ 
+                this->area_width = area_width;
+                this->area_height = area_height;
+                this->x_max =(sample_number == 0)?1:sample_number; 
+                this->data_max = data_max;
+                this->data_min = data_min;
+                double new_y_range = (abs(data_max) > abs(data_min))?
+                            abs(data_max):abs(data_min);
+                
+                y_max = (y_max > new_y_range)?y_max:new_y_range;
+               
+                }
+void Axes::draw(const Cairo::RefPtr<Cairo::Context>& cr){
+  cr->set_line_width(0.5);
+  cr->set_source_rgb(0.0, 0.0, 0.8);
+  cr->move_to(x_margin, area_height/2);
+  cr->line_to(area_width - x_margin, area_height/2);
+  cr->move_to(x_margin, y_margin);
+  cr->line_to(x_margin, area_height - y_margin);
+  
+
+  cr->stroke();
+  
+}
+int Axes::x(double num){
+  
+  double pix_factor = (area_width - x_margin)/x_max;
+  
+    
+    
+  return static_cast<int>(num * pix_factor + x_margin);
+  
+}  
+int Axes::y(double num){
+   
+  double pix_factor = (area_height/2 - y_margin)/y_max;
+  std::cout << area_height/2 << '-' <<y_margin  << '-' <<y_max << '-' << pix_factor << std::endl;
+  return static_cast<int>(area_height/2 - (num * pix_factor));
+  
+}  
+
     

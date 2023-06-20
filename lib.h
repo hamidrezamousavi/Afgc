@@ -6,6 +6,7 @@
 #include <gtkmm.h>
 #include <thread>
 #include <mutex>
+#include <cairomm/context.h>
 using namespace std;
 /*
 
@@ -24,6 +25,26 @@ void read_port(Channle *result);
 void read_sin(Channle *result);
 
 */
+class Axes{
+  private:
+    int area_width;
+    int area_height; 
+    const int x_margin{20};
+    const int y_margin{20};
+    double x_max;
+    double data_max;
+    double data_min;
+    double y_max{1.0};
+    pair<int,int> origin{0,0};
+  
+  public:
+    Axes();
+    void update(int area_width, int area_height, 
+          int sample_number, double data_max, double data_min);
+    void draw(const Cairo::RefPtr<Cairo::Context>& cr);
+    int x(double num);
+    int y(double num);
+};
 class ForceData{
   public:
     double force{};

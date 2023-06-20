@@ -176,15 +176,26 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
   // draw red lines out from the center of the window
   cr->set_source_rgb(0.8, 0.0, 0.0);
-  cr->move_to(0, 100);
-  for(ForceData point:data){
-    std::cout <<point.sample_number<< '-' << point.force << std::endl;
-    cr->line_to(point.sample_number, point.force * 100);
-    cr->move_to(point.sample_number, point.force * 100);
+ // cr->move_to(0, 100);
+  
+ for(ForceData point:data){
+   //below line should put out off loop
+    axe.update(width, height,data.size(),point.max_force, 
+                point.min_force);
+  
+    std::cout << point.max_force << "----" << point.min_force << endl;
+    //std::cout <<point.sample_number<< '-' << point.force << std::endl;
+   // std::cout << axe.x(point.sample_number)<<'-'<< axe.y(point.force);
+   // std::cout << std::endl;
+    cr->line_to(axe.x(point.sample_number), axe.y(point.force));
+    cr->move_to(axe.x(point.sample_number), axe.y(point.force));
     
   }
-  
   cr->stroke();
+  axe.draw(cr);
+  
+  
+  
 
   return true;
 }
