@@ -7,6 +7,9 @@
 #include <thread>
 #include <mutex>
 #include <cairomm/context.h>
+#include <gtkmm/drawingarea.h>
+#include <glib.h>
+#include <gtkmm/grid.h>
 using namespace std;
 /*
 
@@ -32,15 +35,15 @@ class Axes{
     const int x_margin{20};
     const int y_margin{20};
     double x_max;
-    double data_max;
-    double data_min;
+  //  double data_max;
+  //  double data_min;
     double y_max{1.0};
     pair<int,int> origin{0,0};
   
   public:
     Axes();
     void update(int area_width, int area_height, 
-          int sample_number, double data_max, double data_min);
+          int sample_number, double data_max /*double data_min*/);
     void draw(const Cairo::RefPtr<Cairo::Context>& cr);
     int x(double num);
     int y(double num);
@@ -50,7 +53,7 @@ class ForceData{
     double force{};
     int sample_number{};
     double max_force{};
-    double min_force{};
+   // double min_force{};
 };
 
 class MainWindow;

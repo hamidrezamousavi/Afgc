@@ -3,6 +3,7 @@
 #include <string>
 #include <math.h>
 
+
 #include "lib.h"
 /*
 pair<bool,string> Channle::get_next(){
@@ -148,8 +149,8 @@ void ExampleWorker::do_work(MainWindow* caller)
   } // The mutex is unlocked here by lock's destructor.
 
   // Simulate a long calculation.
-  double max = -1000000.0;
-  double min = 10000000.0;
+  double max = -1.0;
+ // double min = 10000000.0;
   double x = 1;
   for (int i = 0; ; ++i) // do until break
   {
@@ -161,12 +162,12 @@ void ExampleWorker::do_work(MainWindow* caller)
       double data = sin(i * 0.10) * x;
       force_data.force = data;
       force_data.sample_number = i;
-      max = (max > data)?max:data;
-      min = (min < data)?min:data;
+      max = (max > abs(data))?max:abs(data);
+    //  min = (min < data)?min:data;
       
       force_data.max_force = max;
   
-      force_data.min_force = min;
+   //   force_data.min_force = min;
       x = x + 0.1;
       
       //m_fraction_done =std::sin(i * 0.01);
@@ -199,17 +200,17 @@ void ExampleWorker::do_work(MainWindow* caller)
 } 
 Axes::Axes(){}
 void Axes::update(int area_width, int area_height, 
-           int sample_number, double data_max, 
-           double data_min){ 
+           int sample_number, double data_max /*, 
+          double data_min*/){ 
                 this->area_width = area_width;
                 this->area_height = area_height;
                 this->x_max =(sample_number == 0)?1:sample_number; 
-                this->data_max = data_max;
-                this->data_min = data_min;
-                double new_y_range = (abs(data_max) > abs(data_min))?
-                            abs(data_max):abs(data_min);
+                //this->data_max = data_max;
+              //  this->data_min = data_min;
+              //  double new_y_range = (abs(data_max) > abs(data_min))?
+               //             abs(data_max):abs(data_min);
                 
-                y_max = (y_max > new_y_range)?y_max:new_y_range;
+                y_max = (y_max > data_max)?y_max:data_max;
                
                 }
 void Axes::draw(const Cairo::RefPtr<Cairo::Context>& cr){
@@ -219,6 +220,28 @@ void Axes::draw(const Cairo::RefPtr<Cairo::Context>& cr){
   cr->line_to(area_width - x_margin, area_height/2);
   cr->move_to(x_margin, y_margin);
   cr->line_to(x_margin, area_height - y_margin);
+  cr->stroke();
+  int len_x_grid = (area_width - (2*x_margin)) /10;
+  int len_y_grid = (area_height - (2*y_margin)) /10;
+  cr->set_line_width(0.1);
+  cr->set_source_rgb(0.1, 0.1, 0.1);
+  cr->move_to(x_margin, area_height/2);
+  for(int i{0}; i < 11 ; i++){
+    cr-> move_to(x_margin + (i* len_x_grid), y_margin);
+    cr-> line_to(x_margin + (i* len_x_grid), area_height - y_margin);
+   
+  }
+  cr->move_to(x_margin, area_height/2);
+  double grade = y_max / 5;
+  for(int i{0}; i < 6 ; i++){
+    cr-> move_to(x_margin , (area_height/2) - (i*len_y_grid));
+   // auto layout = cr->create_pango_layout("Hi there!"); 
+    //layout->show_in_cairo_context(cr); 
+    cr-> line_to(area_width - x_margin , (area_height/2) - (i*len_y_grid));
+    cr-> move_to(x_margin , (area_height/2) + (i*len_y_grid));
+    cr-> line_to(area_width - x_margin , (area_height/2) + (i*len_y_grid));
+   
+  }
   
 
   cr->stroke();

@@ -1,6 +1,6 @@
 #include "gui.h"
 
-#include <cairomm/context.h>
+//#include <cairomm/context.h>
 #include <iostream>
 
 MainWindow::MainWindow()
@@ -177,24 +177,41 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
   // draw red lines out from the center of the window
   cr->set_source_rgb(0.8, 0.0, 0.0);
  // cr->move_to(0, 100);
-  
+
  for(ForceData point:data){
    //below line should put out off loop
-    axe.update(width, height,data.size(),point.max_force, 
-                point.min_force);
+   
+   axe.update(width, height,data.size(),point.max_force/*, 
+                point.min_force*/);
   
-    std::cout << point.max_force << "----" << point.min_force << endl;
+    std::cout << point.max_force << "----" << endl;
     //std::cout <<point.sample_number<< '-' << point.force << std::endl;
    // std::cout << axe.x(point.sample_number)<<'-'<< axe.y(point.force);
    // std::cout << std::endl;
     cr->line_to(axe.x(point.sample_number), axe.y(point.force));
     cr->move_to(axe.x(point.sample_number), axe.y(point.force));
     
-  }
+    auto layout = create_pango_layout("Hi there!"); 
+    layout->show_in_cairo_context(cr);  
+ 
+ }
   cr->stroke();
   axe.draw(cr);
   
-  
+ // Pango::FontDescription font;
+//  font.set_family("Monospace");
+ // font.set_weight(Pango::WEIGHT_BOLD);
+  //auto layout = create_pango_layout("Hi there!");
+ // layout->set_font_description(font);
+
+ // int text_width;
+  //int text_height;
+  //layout->get_pixel_size(text_width, text_height);
+
+  // Position the text in the middle
+ // cr->move_to((rectangle_width-text_width)/2, (rectangle_height-text_height)/2);
+
+ // layout->show_in_cairo_context(cr);
   
 
   return true;
