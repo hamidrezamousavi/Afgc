@@ -43,6 +43,7 @@ MainWindow::MainWindow()
 //  update_start_stop_buttons();
   area.show();
   m_grid.show();
+  
 }
   
    
@@ -177,27 +178,57 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
   // draw red lines out from the center of the window
   cr->set_source_rgb(0.8, 0.0, 0.0);
  // cr->move_to(0, 100);
-
+ if(data.size()>0)
+  std::cout << data.back().sample_number << "---"<< data.back().force<< std::endl;  
  for(ForceData point:data){
    //below line should put out off loop
    
    axe.update(width, height,data.size(),point.max_force/*, 
                 point.min_force*/);
   
-    std::cout << point.max_force << "----" << endl;
+  //  std::cout << point.max_force << "----" << endl;
     //std::cout <<point.sample_number<< '-' << point.force << std::endl;
    // std::cout << axe.x(point.sample_number)<<'-'<< axe.y(point.force);
    // std::cout << std::endl;
     cr->line_to(axe.x(point.sample_number), axe.y(point.force));
     cr->move_to(axe.x(point.sample_number), axe.y(point.force));
     
-    auto layout = create_pango_layout("Hi there!"); 
-    layout->show_in_cairo_context(cr);  
+     
  
- }
-  cr->stroke();
-  axe.draw(cr);
+  }
   
+  cr->stroke();
+  auto grid_len = axe.draw(cr);
+
+  int len_x_grid = grid_len[0];
+  if (data.size()>0)
+  for(int i{0}; i < 11; i++){
+    cr->move_to(20 +(len_x_grid *i),height/2 );
+    std::string x_grid_label = std::to_string((data.back().sample_number/10) * i); 
+    auto layout = create_pango_layout(x_grid_label); 
+    layout->show_in_cairo_context(cr);
+   
+    
+  }
+  
+  
+  int len_y_grid = grid_len[1];
+  if (data.size()>0)
+  for(int i{0}; i < 6; i++){
+    cr->move_to(20, (height/2)- len_y_grid * i);
+    std::string y_grid_label = std::to_string((data.back().max_force/5.0) * static_cast<double>(i)); 
+   // std::cout << data.back().max_force << "*****" << endl;
+    auto layout = create_pango_layout(y_grid_label); 
+    layout->show_in_cairo_context(cr);
+ 
+    cr->move_to(20, (height/2) + len_y_grid * i);
+    y_grid_label = std::to_string((data.back().max_force/-5.0) * static_cast<double>(i)); 
+  
+    layout = create_pango_layout(y_grid_label); 
+  
+    layout->show_in_cairo_context(cr);
+    
+  }
  // Pango::FontDescription font;
 //  font.set_family("Monospace");
  // font.set_weight(Pango::WEIGHT_BOLD);

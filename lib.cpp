@@ -1,4 +1,4 @@
-#include <windows.h>
+
 #include <iostream>
 #include <string>
 #include <math.h>
@@ -159,7 +159,8 @@ void ExampleWorker::do_work(MainWindow* caller)
     { 
       std::lock_guard<std::mutex> lock(m_Mutex);
       
-      double data = sin(i * 0.10) * x;
+    //  double data = sin(i * 0.15707963267948966192313216916398);
+      double data = i*2+(100*sin(i * 0.15707));
       force_data.force = data;
       force_data.sample_number = i;
       max = (max > abs(data))?max:abs(data);
@@ -213,7 +214,7 @@ void Axes::update(int area_width, int area_height,
                 y_max = (y_max > data_max)?y_max:data_max;
                
                 }
-void Axes::draw(const Cairo::RefPtr<Cairo::Context>& cr){
+vector<int> Axes::draw(const Cairo::RefPtr<Cairo::Context>& cr){
   cr->set_line_width(0.5);
   cr->set_source_rgb(0.0, 0.0, 0.8);
   cr->move_to(x_margin, area_height/2);
@@ -226,25 +227,33 @@ void Axes::draw(const Cairo::RefPtr<Cairo::Context>& cr){
   cr->set_line_width(0.1);
   cr->set_source_rgb(0.1, 0.1, 0.1);
   cr->move_to(x_margin, area_height/2);
+  
+ // vector<int> x_grid_cordination{};
   for(int i{0}; i < 11 ; i++){
     cr-> move_to(x_margin + (i* len_x_grid), y_margin);
     cr-> line_to(x_margin + (i* len_x_grid), area_height - y_margin);
-   
+  //  x_grid_cordination.push_back(x_margin + (i* len_x_grid));
   }
+  
   cr->move_to(x_margin, area_height/2);
-  double grade = y_max / 5;
+ // double grade = y_max / 5;
+  
+ // vector<int> y_grid_cordination{};
   for(int i{0}; i < 6 ; i++){
     cr-> move_to(x_margin , (area_height/2) - (i*len_y_grid));
-   // auto layout = cr->create_pango_layout("Hi there!"); 
+   // auto layout = create_pango_layout("Hi there!"); 
     //layout->show_in_cairo_context(cr); 
+ //   y_grid_cordination.push_back((area_height/2) - (i*len_y_grid));
     cr-> line_to(area_width - x_margin , (area_height/2) - (i*len_y_grid));
     cr-> move_to(x_margin , (area_height/2) + (i*len_y_grid));
     cr-> line_to(area_width - x_margin , (area_height/2) + (i*len_y_grid));
-   
+   // y_grid_cordination.push_back((area_height/2) + (i*len_y_grid));
   }
-  
-
   cr->stroke();
+  vector<int> grid_len{};
+  grid_len.push_back(len_x_grid);
+  grid_len.push_back(len_y_grid);
+  return grid_len;
   
 }
 int Axes::x(double num){
@@ -259,7 +268,7 @@ int Axes::x(double num){
 int Axes::y(double num){
    
   double pix_factor = (area_height/2 - y_margin)/y_max;
-  std::cout << area_height/2 << '-' <<y_margin  << '-' <<y_max << '-' << pix_factor << std::endl;
+  //std::cout << area_height/2 << '-' <<y_margin  << '-' <<y_max << '-' << pix_factor << std::endl;
   return static_cast<int>(area_height/2 - (num * pix_factor));
   
 }  

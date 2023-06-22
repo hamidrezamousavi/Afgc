@@ -10,6 +10,8 @@
 #include <gtkmm/drawingarea.h>
 #include <glib.h>
 #include <gtkmm/grid.h>
+#include <windows.h>
+#include <gtkmm/widget.h>
 using namespace std;
 /*
 
@@ -44,7 +46,7 @@ class Axes{
     Axes();
     void update(int area_width, int area_height, 
           int sample_number, double data_max /*double data_min*/);
-    void draw(const Cairo::RefPtr<Cairo::Context>& cr);
+    vector<int> draw(const Cairo::RefPtr<Cairo::Context>& cr);
     int x(double num);
     int y(double num);
 };

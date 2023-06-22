@@ -8,6 +8,7 @@
 #include <gtkmm/grid.h>
 #include <glib.h>
 #include <vector>
+#include <string>
 #include "lib.h"
 
 class MyArea : public Gtk::DrawingArea
