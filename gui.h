@@ -24,6 +24,17 @@ protected:
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
   Axes axe{};
 };
+class ResultTableModel : public Gtk::TreeModel::ColumnRecord
+  {
+  public:
+
+    ResultTableModel()
+    { add(sample_number); add(sample_force);}
+
+    Gtk::TreeModelColumn<int> sample_number;
+    Gtk::TreeModelColumn<double> sample_force;
+    
+  };
 
 
 class MainWindow : public Gtk::Window
@@ -50,6 +61,10 @@ protected:
   
  // Gtk::Button stop_button;
   MyArea area{};
+  Gtk::ScrolledWindow result_ScrolledWindow;
+  ResultTableModel result_model;
+  Gtk::TreeView result_table;
+  Glib::RefPtr<Gtk::ListStore> result_refTreeModel;
   //Gtk::Box m_box1;
   Gtk::Grid m_grid;
   Glib::Dispatcher m_Dispatcher;

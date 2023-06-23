@@ -1,4 +1,3 @@
-#include "lib.h"
 #include <future> 
 #include <iostream>
 #include "gui.h"

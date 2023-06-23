@@ -21,12 +21,33 @@ MainWindow::MainWindow()
               &MainWindow::on_notification_from_worker_thread));
 
   // This packs the button into the Window (a container).
+  result_ScrolledWindow.add(result_table);
+  result_ScrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+  result_refTreeModel = Gtk::ListStore::create(result_model);
+  result_table.set_model(result_refTreeModel);
+  /*
+  Gtk::TreeModel::Row row = *(result_refTreeModel->append());
+  row[result_model.sample_number] = 1;
+  row[result_model.sample_force] = 1.1;
+  
+  row = *(result_refTreeModel->append());
+  row[result_model.sample_number] = 2;
+  row[result_model.sample_force] = 2.2;
+
+  row = *(result_refTreeModel->append());
+  row[result_model.sample_number] = 3;
+  row[result_model.sample_force] = 3.3;
+*/
+  result_table.append_column("No.", result_model.sample_number);
+  result_table.append_column_numeric("Force",result_model.sample_force,"%5.4f");
+  
   m_grid.set_row_homogeneous(true);
   m_grid.set_column_homogeneous(true);
   add(m_grid);
-  m_grid.attach(area,2, 0, 10, 40);
+  m_grid.attach(area,3, 0, 10, 40);
   m_grid.attach(start_button,0, 0, 1, 2);
   m_grid.attach(force_label,0, 4, 1, 2);
+  m_grid.attach(result_ScrolledWindow,0,6,3,10);
   
   //m_box1.pack_start(start_button);
  // m_box1.pack_start(force_label);
@@ -38,6 +59,8 @@ MainWindow::MainWindow()
   // The final step is to display this newly created widget...
   start_button.show();
   force_label.show();
+  result_ScrolledWindow.show();
+  show_all_children();
  // stop_button.show();
  // m_grid.pack_start(area);
 //  update_start_stop_buttons();
@@ -117,8 +140,14 @@ void MainWindow::update_widgets()
   Glib::ustring message_from_worker_thread;
   m_Worker.get_data(&force_data, &message_from_worker_thread);
  // std::cout << fraction_done<< std::endl;
+  force_label.set_text(std::to_string(force_data.force)); 
   area.data.push_back(force_data);
   area.queue_draw();
+  Gtk::TreeModel::Row row = *(result_refTreeModel->append());
+  row[result_model.sample_number] = force_data.sample_number;
+  row[result_model.sample_force] = force_data.force;
+  
+  
   
   //m_ProgressBar.set_fraction(fraction_done);
 /*
