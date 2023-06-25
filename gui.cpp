@@ -4,12 +4,26 @@
 #include <iostream>
 
 MainWindow::MainWindow()
-: start_button("Start"),force_label("0.0"),
-  m_Dispatcher(),  m_Worker(),m_WorkerThread(nullptr) 
+: start_button("Start"),
+  force_label("0.0"),
+  start_point_entry_label("From"),
+  end_point_entry_label("To"),
+  start_point_entry(),
+  end_point_entry(),
+  claculate_button("Calculate"),
+  min_label("Min"),
+  min_out_label("  2.561   "),
+  max_label("Max"),
+  max_out_label(" 123.5    "),
+  std_label("Std"),
+  std_out_label("+_2.5"),
+  m_Dispatcher(),
+  m_Worker(),
+  m_WorkerThread(nullptr) 
 {
   // Sets the border width of the window.
   set_border_width(10);
-  set_default_size(1100,900);
+  //set_default_size(900,500);
   //start_button.set_default_size(50,20);
   // When the button receives the "clicked" signal, it will call the
   // on_button_clicked() method defined below.
@@ -41,13 +55,45 @@ MainWindow::MainWindow()
   result_table.append_column("No.", result_model.sample_number);
   result_table.append_column_numeric("Force",result_model.sample_force,"%5.4f");
   
+  
+  
+  
+  
   m_grid.set_row_homogeneous(true);
   m_grid.set_column_homogeneous(true);
   add(m_grid);
-  m_grid.attach(area,3, 0, 10, 40);
-  m_grid.attach(start_button,0, 0, 1, 2);
-  m_grid.attach(force_label,0, 4, 1, 2);
-  m_grid.attach(result_ScrolledWindow,0,6,3,10);
+  m_grid.attach(area,20, 0, 40, 50);
+  m_grid.attach(start_button,0, 0, 5, 5);
+  start_button.set_margin_start	(20);	
+
+  m_grid.attach(force_label,0, 20, 10, 10);
+  
+  m_grid.attach(start_point_entry, 46, 51, 10, 5);
+  m_grid.attach(start_point_entry_label, 56, 51, 5, 5);
+  
+  m_grid.attach(end_point_entry,46 , 56, 10, 5);
+  m_grid.attach(end_point_entry_label, 56, 56, 5, 5);
+  
+  m_grid.attach(claculate_button,46 , 61, 10, 5);
+ // m_grid.attach(start_point_entry, 30, 78, 10, 5);
+  
+  
+  
+ 
+  
+ // start_point_entry.set_margin_start(40);
+  
+  
+  m_grid.attach(min_label, 40, 50, 5, 5);
+  m_grid.attach(min_out_label, 40, 55, 5, 5);
+  m_grid.attach(max_label, 35, 50, 5, 5);
+  m_grid.attach(max_out_label, 35, 55, 5, 5);
+  m_grid.attach(std_label, 30, 50, 5, 5);
+  m_grid.attach(std_out_label, 30, 55, 5, 5);
+  
+  result_ScrolledWindow.set_margin_start(20);
+  result_ScrolledWindow.set_margin_end(40);
+  m_grid.attach(result_ScrolledWindow,0,30,10,30);
   
   //m_box1.pack_start(start_button);
  // m_box1.pack_start(force_label);
@@ -57,15 +103,16 @@ MainWindow::MainWindow()
  // add(stop_button);
 
   // The final step is to display this newly created widget...
-  start_button.show();
-  force_label.show();
-  result_ScrolledWindow.show();
-  show_all_children();
+  //start_button.show();
+ // force_label.show();
+ // result_ScrolledWindow.show();
+  
  // stop_button.show();
  // m_grid.pack_start(area);
 //  update_start_stop_buttons();
-  area.show();
-  m_grid.show();
+ // area.show();
+ // m_grid.show();
+  show_all_children();
   
 }
   

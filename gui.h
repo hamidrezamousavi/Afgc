@@ -3,6 +3,7 @@
 
 #include <gtkmm/button.h>
 #include <gtkmm/label.h>
+#include <gtkmm/entry.h>
 #include <gtkmm/window.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/grid.h>
@@ -59,6 +60,18 @@ protected:
   Gtk::Button start_button;
   Gtk::Label force_label;
   
+  Gtk::Label start_point_entry_label;
+  Gtk::Label end_point_entry_label;
+  Gtk::Entry start_point_entry;
+  Gtk::Entry end_point_entry;
+  Gtk::Button claculate_button;
+  Gtk::Label min_label;
+  Gtk::Label min_out_label;
+  Gtk::Label max_label;
+  Gtk::Label max_out_label;
+  Gtk::Label std_label;
+  Gtk::Label std_out_label;
+  
  // Gtk::Button stop_button;
   MyArea area{};
   Gtk::ScrolledWindow result_ScrolledWindow;
@@ -66,6 +79,7 @@ protected:
   Gtk::TreeView result_table;
   Glib::RefPtr<Gtk::ListStore> result_refTreeModel;
   //Gtk::Box m_box1;
+  
   Gtk::Grid m_grid;
   Glib::Dispatcher m_Dispatcher;
   ExampleWorker m_Worker;
