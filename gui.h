@@ -43,12 +43,14 @@ class MainWindow : public Gtk::Window
 
 public:
   MainWindow();
+  
   void notify();
   virtual ~MainWindow();
 
 protected:
   //Signal handlers:
   void on_start_clicked();
+  void on_calculate_clicked();
  // void on_stop_clicked();
  // void update_start_stop_buttons();
   void update_widgets();
@@ -69,6 +71,8 @@ protected:
   Gtk::Label min_out_label;
   Gtk::Label max_label;
   Gtk::Label max_out_label;
+  Gtk::Label mean_label;
+  Gtk::Label mean_out_label;
   Gtk::Label std_label;
   Gtk::Label std_out_label;
   

@@ -1,4 +1,5 @@
 #include "gui.h"
+#include "lib.h"
 
 //#include <cairomm/context.h>
 #include <iostream>
@@ -15,6 +16,8 @@ MainWindow::MainWindow()
   min_out_label("  2.561   "),
   max_label("Max"),
   max_out_label(" 123.5    "),
+  mean_label("mean"),
+  mean_out_label(" 15.56    "),
   std_label("Std"),
   std_out_label("+_2.5"),
   m_Dispatcher(),
@@ -31,6 +34,8 @@ MainWindow::MainWindow()
               &MainWindow::on_start_clicked));
  // stop_button.signal_clicked().connect(sigc::mem_fun(*this,
    //           &MainWindow::on_stop_clicked));
+  claculate_button.signal_clicked().connect(sigc::mem_fun(*this,
+              &MainWindow::on_calculate_clicked));
   m_Dispatcher.connect(sigc::mem_fun(*this, 
               &MainWindow::on_notification_from_worker_thread));
 
@@ -88,8 +93,10 @@ MainWindow::MainWindow()
   m_grid.attach(min_out_label, 40, 55, 5, 5);
   m_grid.attach(max_label, 35, 50, 5, 5);
   m_grid.attach(max_out_label, 35, 55, 5, 5);
-  m_grid.attach(std_label, 30, 50, 5, 5);
-  m_grid.attach(std_out_label, 30, 55, 5, 5);
+  m_grid.attach(mean_label, 30, 50, 5, 5);
+  m_grid.attach(mean_out_label, 30, 55, 5, 5);
+  m_grid.attach(std_label, 25, 50, 5, 5);
+  m_grid.attach(std_out_label, 25, 55, 5, 5);
   
   result_ScrolledWindow.set_margin_start(20);
   result_ScrolledWindow.set_margin_end(40);
@@ -181,6 +188,40 @@ void MainWindow::update_start_stop_buttons()
   start_button.set_sensitive(!thread_is_running);
   stop_button.set_sensitive(thread_is_running);
 }*/
+void MainWindow::on_calculate_clicked(){
+  int start{0};
+  int end{0};
+  
+  
+  try{
+     start = std::stoi(start_point_entry.get_text());
+     end = std::stoi(end_point_entry.get_text());
+  }
+  catch (std::invalid_argument const& ex){
+            std::cout << "std::invalid_argument::what(): " << ex.what() << '\n';
+  }
+  catch (std::out_of_range const& ex)
+        {
+            std::cout << "std::out_of_range::what(): " << ex.what() << '\n';
+            
+        }
+  if(start < 0 || end < 0){
+    std::cout << " start and end point must be over zero";
+    return ;
+  }
+  std::cout <<  start << "**" << end << std::endl;
+ 
+  auto result = calculate(this->area.data, start, end);
+  
+  min_out_label.set_text(to_string(result[0]));
+  max_out_label.set_text(to_string(result[1]));
+  mean_out_label.set_text(to_string(result[2]));
+  std_out_label.set_text(to_string(result[3]));
+  
+  for(auto item:result)
+      std::cout << item << '-';
+  std::cout << "-------"<< std::endl;
+}
 void MainWindow::update_widgets()
 {
   ForceData force_data{};
@@ -255,7 +296,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
   cr->set_source_rgb(0.8, 0.0, 0.0);
  // cr->move_to(0, 100);
  if(data.size()>0)
-  std::cout << data.back().sample_number << "---"<< data.back().force<< std::endl;  
+ // std::cout << data.back().sample_number << "---"<< data.back().force<< std::endl;  
  for(ForceData point:data){
    //below line should put out off loop
    

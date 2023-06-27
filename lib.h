@@ -3,6 +3,8 @@
 #include <vector>
 #include <utility>
 #include <string>
+#include <limits>
+#include <cmath>
 #include <gtkmm.h>
 #include <thread>
 #include <mutex>
@@ -83,7 +85,8 @@ private:
   Glib::ustring m_message;
 };
 
-
+vector<double> calculate(const vector<ForceData>& data, 
+                         int start, int end);
 
 
 #endif

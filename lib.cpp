@@ -273,4 +273,26 @@ int Axes::y(double num){
   
 }  
 
+vector<double> calculate(const vector<ForceData>& data, 
+                         int start, int end){
+  double min = numeric_limits<double>::infinity();
+  double max = -1 * numeric_limits<double>::infinity();
+  double sum{0};
+  double ave{0};
+  double stdv{0};
+  double sqrsum{0};
+  for(int i{start}; i <= end; i++){
+    sum += data[i].force;
+    max = (data[i].force > max)?data[i].force:max;
+    min = (data[i].force < min)?data[i].force:min;
+  }
+  ave = sum / (end - start + 1);
+  
+  for(int i{start}; i <= end; i++){
+    sqrsum += pow((data[i].force - ave),2);
+  }
+  stdv = sqrt(sqrsum / (end - start + 1));                          
+  
+  return vector<double>{min, max, ave, stdv};
+}
     
